@@ -6,7 +6,32 @@ from .models import Post
 from .models import Profile
 from django.views import View
 
+from django.db import transaction
+from .models import Order, OrderItem
 # Create your views here.
+
+@transaction.atomic
+def create_order_and_items(order_data, items_data):
+    order = Order.objects.create(**order_data)
+    
+    for i, item in enumerate(items_data):
+        if i == 1:
+            raise ValueError("Simulated exception!")  
+        OrderItem.objects.create(order=order, **item)
+    
+    return order
+
+def create_order_view(request):
+    try:
+        order_data = {'customer_name': 'Ilia shubitidze', 'total_price': 100}
+        items_data = [{'product': 'Laptop', 'price': 50}, {'product': 'Mouse', 'price': 50}]
+        
+        create_order_and_items(order_data, items_data)
+        return JsonResponse({"message": "Order created successfully!"})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+
 
 class HomeView(View):
     def get(self, request):

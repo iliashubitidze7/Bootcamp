@@ -20,6 +20,7 @@ from core.views import ProfileView
 from core.views import PostListView
 from core.views import ApiView
 from core.views import HomeView
+from core.views import create_order_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,5 @@ urlpatterns = [
     path('api/', ApiView.as_view()),
     path('blog/', PostListView.as_view()),
     path('profile/', ProfileView.as_view()),
+    path('create-order/', create_order_view, name='create-order'),
 ]
