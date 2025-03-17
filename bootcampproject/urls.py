@@ -16,11 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include
 from core.views import ProfileView
 from core.views import PostListView
 from core.views import ApiView
 from core.views import HomeView
 from core.views import create_order_view
+from core.views import ProductListCreate
+from core.views import ProductRetrieveUpdateDestroy
+
+from rest_framework import routers
+from core import views
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +38,7 @@ urlpatterns = [
     path('blog/', PostListView.as_view()),
     path('profile/', ProfileView.as_view()),
     path('create-order/', create_order_view, name='create-order'),
+    path('api-auth', include('rest_framework.urls')),
+    path('products/', ProductListCreate.as_view()),
+    path('products/<int:pk>/', ProductRetrieveUpdateDestroy.as_view()),
 ]

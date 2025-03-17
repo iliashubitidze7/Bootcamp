@@ -1,36 +1,51 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views import View
+from rest_framework import generics
+from .serializers import ProductSerializer
+from .models import Product
 from .models import Post
 from .models import Profile
-from django.views import View
 
 from django.db import transaction
 from .models import Order, OrderItem
 # Create your views here.
 
+class ProductListCreate(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
 @transaction.atomic
 def create_order_and_items(order_data, items_data):
     order = Order.objects.create(**order_data)
     
-    for i, item in enumerate(items_data):
-        if i == 1:
-            raise ValueError("Simulated exception!")  
-        OrderItem.objects.create(order=order, **item)
+    for item_data in items_data:
+        OrderItem.objects.create(order=order, **item_data)
     
-    return order
 
-def create_order_view(request):
-    try:
-        order_data = {'customer_name': 'Ilia shubitidze', 'total_price': 100}
-        items_data = [{'product': 'Laptop', 'price': 50}, {'product': 'Mouse', 'price': 50}]
-        
-        create_order_and_items(order_data, items_data)
-        return JsonResponse({"message": "Order created successfully!"})
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+    if len(items_data) > 3:
+        raise Exception("Simulating an error mid-transaction!")
 
+order_data = {'customer_name': 'ilia', 'total_amount': 200.00}
+items_data = [
+    {'product_name': 'Product 1', 'quantity': 2},
+    {'product_name': 'Product 2', 'quantity': 1},
+    {'product_name': 'Product 3', 'quantity': 5},
+
+]
+
+try:
+    create_order_and_items(order_data, items_data)
+    print("Order and items created successfully.")
+except Exception as e:
+    print(f"Transaction failed: {e}")
 
 
 class HomeView(View):

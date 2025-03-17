@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'bootcampproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bootcamp_db',
+        'USER': 'postgres',  # Your PostgreSQL username
+        'PASSWORD': 'Glorimanutd7',  # Your PostgreSQL password
+        'HOST': 'localhost',  # Keep 'localhost' if running locally
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
