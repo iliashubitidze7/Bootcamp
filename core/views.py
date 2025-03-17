@@ -6,9 +6,10 @@ from django.db import transaction
 from rest_framework import generics
 from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from .serializers import ProductSerializer
 from .models import Order, OrderItem , Product, Post, Profile
-
+from .permissions import IsManager
 import pytest
 
 
@@ -17,6 +18,8 @@ import pytest
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated, IsManager]
+
 
 
 class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -85,6 +88,45 @@ class ProfileView(View):
         return render (request, 'core/profile.html', {'profile': profile})
 
 
+@pytest.mark.django_db
+def test_product_list_create():
+    client = APIClient()
 
-    
+    # Test GET (List Products)
+    response = client.get('/products/')
+    assert response.status_code == status.HTTP_200_OK
+
+    # Test POST (Create Product)
+    product_data = {
+        'name': 'Product 1',
+        'price': 100.00,
+        'description': 'A great product'
+    }
+    response = client.post('/products/', product_data, format='json')
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['name'] == 'Product 1'
+
+@pytest.mark.django_db
+def test_product_retrieve_update_destroy():
+    client = APIClient()
+    product = Product.objects.create(name='Product 1', price=100.00, description='A great product')
+
+    # Test GET (Retrieve Product)
+    response = client.get(f'/products/{product.pk}/')
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['name'] == 'Product 1'
+
+    # Test PUT (Update Product)
+    updated_data = {
+        'name': 'Updated Product',
+        'price': 120.00,
+        'description': 'Updated description'
+    }
+    response = client.put(f'/products/{product.pk}/', updated_data, format='json')
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['name'] == 'Updated Product'
+
+    # Test DELETE (Delete Product)
+    response = client.delete(f'/products/{product.pk}/')
+    assert response.status_code == status.HTTP_204_NO_CONTENT
 
