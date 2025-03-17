@@ -2,14 +2,16 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from rest_framework import generics
-from .serializers import ProductSerializer
-from .models import Product
-from .models import Post
-from .models import Profile
-
 from django.db import transaction
-from .models import Order, OrderItem
+from rest_framework import generics
+from rest_framework.test import APIClient
+from rest_framework import status
+from .serializers import ProductSerializer
+from .models import Order, OrderItem , Product, Post, Profile
+
+import pytest
+
+
 # Create your views here.
 
 class ProductListCreate(generics.ListCreateAPIView):
