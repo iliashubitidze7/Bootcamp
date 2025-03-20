@@ -27,6 +27,7 @@ from core.views import ApiView
 from core.views import HomeView
 from core.views import ProductListCreate
 from core.views import ProductRetrieveUpdateDestroy
+from core.views import trigger_task
 
 
 
@@ -38,6 +39,7 @@ schema_view = get_schema_view(
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@productapi.local"),
       license=openapi.License(name="BSD License"),
+      
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
@@ -54,5 +56,6 @@ urlpatterns = [
     path('products/', ProductListCreate.as_view()),
     path('products/<int:pk>/', ProductRetrieveUpdateDestroy.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+     path('trigger-task/', trigger_task, name='trigger-task'),
 
 ]

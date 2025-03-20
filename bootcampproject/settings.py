@@ -15,6 +15,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -80,10 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bootcamp_db',
-        'USER': 'postgres',  # Your PostgreSQL username
-        'PASSWORD': 'Glorimanutd7',  # Your PostgreSQL password
-        'HOST': 'localhost',  # Keep 'localhost' if running locally
-        'PORT': '5432',  # Default PostgreSQL port
+        'USER': 'postgres', 
+        'PASSWORD': 'Glorimanutd7', 
+        'HOST': 'localhost',  
+        'PORT': '5432', 
     }
 }
 
@@ -97,6 +100,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Use your SMTP provider
+EMAIL_PORT = 587  # Common SMTP port for TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'bulkysender7@gmail.com'
+EMAIL_HOST_PASSWORD = 'pebv ldii hvgn jyzj'
+
 
 from datetime import timedelta
 SIMPLE_JWT = {
